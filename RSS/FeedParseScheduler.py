@@ -34,6 +34,7 @@ def main():
     config.read("./config/rss.cfg")
     source_counter = 0
     while(config.has_section("source_" + str(source_counter))):
+        feedParseJob(config.get("source_" + str(source_counter), "source"))
         schedule.every(5).minutes.do( feedParseJob, config.get("source_" + str(source_counter), "source") )
         source_counter += 1
         
