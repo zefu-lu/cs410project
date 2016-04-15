@@ -46,6 +46,8 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -71,8 +73,39 @@
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 	  }
 
+	  _createClass(App, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'app' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'container' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'pic' },
+	            ' '
+	          ),
+	          _react2.default.createElement('input', null),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored' },
+	            ' Search '
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
 	  return App;
 	}(_react2.default.Component);
+
+	_reactDom2.default.render(_react2.default.createElement(
+	  App,
+	  null,
+	  ' '
+	), document.getElementById('app'));
 
 /***/ },
 /* 1 */
