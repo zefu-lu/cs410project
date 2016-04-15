@@ -1,0 +1,40 @@
+"""
+@author : Zefu Lu
+"""
+from ConfigParser import SafeConfigParser
+from pymongo import MongoClient
+import nltk.data
+from nltk import word_tokenize
+import datetime
+from gensim.models import phrases, word2vec
+from pprint import pprint as pp
+from textblob import TextBlob
+import time,codecs,numpy
+import fastcluster
+import scipy,numpy
+
+model = word2vec.Word2Vec.load("vectors.bin")
+
+nps = []
+for line in codecs.open("np.txt", "r", "utf-8"):
+    nps.append(line.replace("\n",""))
+
+print "constructing valid NPs"
+valid_nps = []
+np_word_vectors = []
+count = 0
+for w in nps:
+    try:
+        count+=1
+        np_word_vectors.append(model.syn0[model.vocab[w].index])
+        valid_nps.append(w)
+    except:
+        continue
+
+print "# of NPs: " + str(len(np_word_vectors))
+
+X = numpy.matrix(np_word_vectors)
+print X
+print "Agglomerative Clustering using FastCluster"
+Z = fastcluster.linkage(scipy.spatial.distance.pdist(X, 'cosine'), method='single', metric='cosine',preserve_input=False)
+print Z
