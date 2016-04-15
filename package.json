@@ -4,7 +4,7 @@
   "description": "陆师傅的后花园",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --watch"
   },
   "repository": {
     "type": "git",
