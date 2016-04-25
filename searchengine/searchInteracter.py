@@ -1,0 +1,45 @@
+"""
+@author: Zefu Lu
+"""
+
+import feedparser
+from pprint import pprint as pp
+from ConfigParser import SafeConfigParser
+import socket,json
+
+network = SafeConfigParser()
+network.read("./config/network.cfg")
+
+searchEngineIp = network.get("searchEngine", "ip")
+searchEnginePort = int(network.get("searchEngine", "port"))
+
+
+def main():
+    while True:
+        query = raw_input('--> ')
+        try:
+            sock = socket.socket()
+        except Exception as e:
+            print e
+            print "Interactor: Failure when creating socket"
+        try:
+            sock.connect((searchEngineIp, searchEnginePort))
+        except Exception as e:
+            print e
+            print "Interactor: Failure when connecting newsParser"
+            exit(-1)
+        try:
+            sock.send(json.dumps({"query":query, "page": 0, "size": 10}))
+        except Exception as e:
+            print e
+            print "Interactor: Failure when sending mesg"
+        try:
+            raw = sock.recv(100000)
+        except Exception as e:
+            print e
+            print "Interactor: Failure recving mesg"
+        pp(json.loads(raw))
+        sock.close()
+
+if __name__ == '__main__':
+    main()
