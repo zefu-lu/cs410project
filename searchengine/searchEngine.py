@@ -24,6 +24,7 @@ class ListenerThread(Thread):
         self.killReceived = False
         self.w2v = w2v
         self.npset = npset
+        self.total_docs = self.client.news.news_raw.find({}).count()
 
     def run(self):
         s = socket.socket()

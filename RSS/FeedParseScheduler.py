@@ -65,7 +65,7 @@ def main():
         feedParseJob(config.get("source_" + str(source_counter), "source"))
         schedule.every(5).minutes.do( feedParseJob, config.get("source_" + str(source_counter), "source") )
         source_counter += 1
-        
+
     while True:
         schedule.run_pending()
         time.sleep(1)

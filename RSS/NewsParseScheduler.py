@@ -1,7 +1,7 @@
 """
 @author : Zefu Lu
 """
-
+from __future__ import division
 from Queue import Queue
 from ConfigParser import SafeConfigParser
 import socket, random, time
@@ -9,6 +9,8 @@ from threading import *
 from newspaper import Article
 from pymongo import MongoClient
 import datetime
+import nltk, re, pprint
+from nltk import word_tokenize
 
 ip = None
 port = None
@@ -45,8 +47,9 @@ class HandlerThread(Thread):
             article = Article(url, language="en")
             article.download()
             article.parse()
-            self.client.news.news_raw.insert({"title" : article.title, "text": article.text, "date": datetime.datetime.utcnow()})
-            print "Parsing " + article.title +" : " + str(len(article.text))
+            tokenized_text = word_tokenize(article.text)
+            self.client.news.news_raw.insert({"title" : article.title, "text": tokenized_text, "date": datetime.datetime.utcnow(), "url": article.url})
+            print "Parsing " + article.title + "@" + article.url +" : " + str(len(tokenized_text))
         
 def main():
     try:
