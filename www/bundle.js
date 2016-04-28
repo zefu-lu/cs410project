@@ -66,7 +66,8 @@
 	var Result = _Simple2.default.Component({
 	  getDefaultProps: function getDefaultProps() {
 	    return {
-	      recommdation: false
+	      recommdation: false,
+	      query: ''
 	    };
 	  },
 	  render: function render() {
@@ -76,7 +77,7 @@
 
 	    return this.div({ class: 'result-page' }, this.div({ class: 'search-div' }, this.div({ class: 'pic-div' }, this.img({ class: 'pic', click: function click() {
 	        location.reload();
-	      }, src: './images/Lus-Garden.png' })), this.div({ class: 'search-box-div' }, this.input({ class: 'search-box' }), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon' }, this.i({ class: 'material-icons' }, 'search')))), this.div({ class: 'results' }, results));
+	      }, src: './images/Lus-Garden.png' })), this.div({ class: 'search-box-div' }, this.input({ class: 'search-box', value: this.props.query }), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon' }, this.i({ class: 'material-icons' }, 'search')))), this.div({ class: 'results' }, results));
 	  }
 	});
 
@@ -85,6 +86,7 @@
 	    /*
 	     *   MAIN_PAGE
 	     *   RECOMMENDATION_RESULT
+	     *   SEARCH_RESULT
 	     */
 	    this.state = { page: 'MAIN_PAGE' };
 	  },
@@ -92,11 +94,18 @@
 	    console.log('show recommendation');
 	    this.setState({ page: 'RECOMMENDATION_RESULT' });
 	  },
+	  showSearchResult: function showSearchResult() {
+	    this.setState({ page: 'SEARCH_RESULT', query: this.refs.search.value });
+	  },
 	  render: function render() {
 	    if (this.state.page === 'MAIN_PAGE') {
-	      return this.div({ class: 'app' }, this.div({ class: 'container' }, this.div({ class: 'pic' }), this.input(), this.div({ class: 'button-group' }, this.div({ class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored' }, 'Search'), this.div({ class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this) }, '百度一下'))));
+	      return this.div({ class: 'app' }, this.div({ class: 'container' }, this.div({ class: 'pic' }), this.input({ ref: 'search', autofocus: 'true' }), this.div({ class: 'button-group' }, this.div({ class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showSearchResult.bind(this) }, 'Search'), this.div({ class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this) }, '百度一下'))));
 	    } else if (this.state.page === 'RECOMMENDATION_RESULT') {
 	      return Result({ recommdation: true });
+	    } else if (this.state.page === 'SEARCH_RESULT') {
+	      return Result({ recommdation: false, query: this.state.query });
+	    } else {
+	      throw 'Wrong Page';
 	    }
 	  }
 	});
