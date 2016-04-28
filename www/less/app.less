@@ -30,14 +30,31 @@
       font-size: 18px;
       padding: 12px;
       margin-bottom: 32px;
+
+      &:focus {
+        outline-width: 1px;
+      }
     }
 
-    .search-btn {
-      position: relative;
-      width: 128px;
-      height: 36px;
-      left: 50%;
-      transform: translateX(-50%);
+    .button-group {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+
+      .search-btn, .lucky-btn {
+        position: relative;
+        margin: 0 24px;
+        width: 128px;
+        height: 36px;
+      }
+
+      .search-btn {
+        background-color: #043062;
+      }
+
+      .lucky-btn {
+        background-color: #E4A010;
+      }
     }
   }
 }

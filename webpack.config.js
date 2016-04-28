@@ -1,7 +1,7 @@
 'use strict'
 let path = require('path')
 module.exports = {
-  entry: path.resolve(__dirname, './www/js/app.jsx'),
+  entry: path.resolve(__dirname, './www/js/app.js'),
   output: {
     path: path.resolve(__dirname, './www'),
     filename: 'bundle.js'
