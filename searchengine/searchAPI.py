@@ -46,7 +46,7 @@ class SearchAPI(Resource):
             return {"result":"not found"}
 
         augmented_query.insert(0, [query, 1.0])
-
+        augmented_query = augmented_query[:10]
         print("a")
         # Getting all documents
         doc_set = set()
