@@ -128,3 +128,11 @@ body {
 .result-page .card .link {
   color: #68a65c;
 }
+.result-page .pages-list {
+  border-top: 1px solid #E6E6E6;
+  margin-top: 24px;
+  padding-top: 12px;
+}
+.result-page .pages-list .page {
+  margin-left: 12px;
+}

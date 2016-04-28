@@ -1,6 +1,6 @@
 import Simple from './Simple/Simple.js'
 
-
+// haha
 let data = [['56fc22ccdb366837f50cc6bd',
               'The inside story of the Paris terror attack',
               'http://rss.cnn.com/c/35492/f/676961/s/4e9b3442/sc/13/l/0L0Scnn0N0C20A160C0A30C30A0Ceurope0Cinside0Eparis0Ebrussels0Eterror0Eattacks0Cindex0Bhtml0Deref0Frss0Itopstories/story01.htm',
@@ -76,7 +76,12 @@ let Result = Simple.Component({
                 this.button({class: 'mdl-button mdl-js-button mdl-button--icon'},
                   this.i({class: 'material-icons'}, 'mood')))),
             this.div({class: 'results'},
-              results))
+              this.p({class: 'intro'}, '10 results found'),
+              results,
+              this.div({class: 'pages-list'},
+                this.span({class: 'page'}, 1),
+                this.span({class: 'page'}, 2)
+              )))
   }
 })
 
@@ -105,7 +110,7 @@ let App = Simple.Component({
                 this.input({ref: 'search', autofocus: 'true'}),
                 this.div({class: 'button-group'},
                   this.div({class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showSearchResult.bind(this)}, 'Search'),
-                  this.div({class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this)}, 'Feeling Lucky'))))
+                  this.div({class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this)}, '百度一下'))))
     } else if (this.state.page === 'RECOMMENDATION_RESULT') {
       return Result({recommdation: true})
     } else if (this.state.page === 'SEARCH_RESULT') {
