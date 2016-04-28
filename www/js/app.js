@@ -71,8 +71,10 @@ let Result = Simple.Component({
                 this.img({class: 'pic', click: ()=> {location.reload()}, src:'./images/Lus-Garden.png'})),
               this.div({class: 'search-box-div'},
                 this.input({class: 'search-box', value: this.props.query}),
+                this.button({class: 'mdl-button mdl-js-button mdl-button--icon', style: {marginLeft: '8px'}},
+                  this.i({class: 'material-icons'}, 'search')),
                 this.button({class: 'mdl-button mdl-js-button mdl-button--icon'},
-                  this.i({class: 'material-icons'}, 'search')))),
+                  this.i({class: 'material-icons'}, 'mood')))),
             this.div({class: 'results'},
               results))
   }
