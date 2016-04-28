@@ -17,7 +17,7 @@ except Exception as e:
 
 try:
     npset = []
-    for line in codecs.open("np.txt", "r", "utf-8"):
+    for line in codecs.open("searchengine/np.txt", "r", "utf-8"):
         npset.append(line.replace("\n",""))
 except Exception as e:
     print e
