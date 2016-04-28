@@ -105,7 +105,7 @@ let App = Simple.Component({
                 this.input({ref: 'search', autofocus: 'true'}),
                 this.div({class: 'button-group'},
                   this.div({class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showSearchResult.bind(this)}, 'Search'),
-                  this.div({class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this)}, '百度一下'))))
+                  this.div({class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this)}, 'Feeling Lucky'))))
     } else if (this.state.page === 'RECOMMENDATION_RESULT') {
       return Result({recommdation: true})
     } else if (this.state.page === 'SEARCH_RESULT') {
