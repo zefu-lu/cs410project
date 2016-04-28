@@ -132,3 +132,11 @@ body {
 .result-page .card .link {
   color: #68a65c;
 }
+.result-page .pages-list {
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+.result-page .pages-list .page {
+  padding: 12px;
+}

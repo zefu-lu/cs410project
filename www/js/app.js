@@ -77,7 +77,11 @@ let Result = Simple.Component({
                   this.i({class: 'material-icons'}, 'mood')))),
             this.p({class: 'intro'}, '10 results found'),
             this.div({class: 'results'},
-              results))
+              results,
+              this.div({class: 'pages-list'},
+                this.span({class: 'page'}, 1),
+                this.span({class: 'page'}, 2)
+              )))
   }
 })
 
