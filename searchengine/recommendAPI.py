@@ -32,6 +32,10 @@ class recommendAPI(Resource):
     def get(self):
         args = search.parse_args()
         queries = args['keywords']
+
+        if (len(queries) == 0):
+            return ({"result":'null'}, 201)
+
         #print queries
         queries = queries.split('\n')
         scores = []
@@ -80,4 +84,4 @@ class recommendAPI(Resource):
         result = result[:50]
         #print("c")
 
-        return ({"result":result}, 201)
+        return ({"result":result, 'counts': len(result)}, 201)

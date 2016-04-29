@@ -17,7 +17,8 @@ emitter.on('recommend', function({keywords}, component) {
     if (typeof (results) === 'string') {
       results = []
     }
-    component.setProps({results, isRecommendation: true})
+    component.stopTimer()
+    component.setProps({results, isRecommendation: true, searching: false, counts: res.counts})
   })
 })
 

@@ -52,7 +52,7 @@ let Result = Simple.Component({
     this.setProps({isRecommendation: false})
   },
   componentDidMount: function() {
-    if (!this.props.recommdation && this.props.query) {
+    if (!this.props.isRecommendation && this.props.query) {
       let query = this.props.query.toLowerCase(),
           size = 10,
           page = 0
@@ -90,7 +90,13 @@ let Result = Simple.Component({
   recommend: function() {
     this.refs.search.value = ''
     this.emit('recommend', {keywords: Object.keys(KEYWORDS).join('\n')})
-    this.setProps({searching: true})
+
+    this.props.time = 0
+    this.interval = setInterval(()=>{
+      this.props.time += 0.01
+    }, 10)
+
+    this.setProps({searching: true, isRecommendation: true})
   },
   render: function() {
     let results = []
@@ -104,7 +110,7 @@ let Result = Simple.Component({
     }
 
     let pagesList = []
-    if (!this.props.searching && this.props.counts) {
+    if (!this.props.searching && this.props.counts && !this.props.isRecommendation) {
       for (let i = 0; i < Math.ceil(this.props.counts / 10); i++) {
         pagesList.push(this.span({class: `page ${this.props.page === i ? 'selected' : ''}`, click: this.searchPage.bind(this, i)}, (i+1)))
       }
@@ -123,7 +129,7 @@ let Result = Simple.Component({
 
             (this.props.isRecommendation ?
             this.div({class: 'results'},
-              this.p({class: 'intro'}, 'Recommendations for you'),
+              this.p({class: 'intro'}, this.props.searching? 'recommending...' : `${this.props.counts} results found in ${this.props.time.toFixed(4)}`),
               results,
               null)
             :
