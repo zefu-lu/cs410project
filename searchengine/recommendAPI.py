@@ -32,6 +32,7 @@ class recommendAPI(Resource):
     def get(self):
         args = search.parse_args()
         queries = args['keywords']
+        #print queries
         queries = queries.split('\n')
         scores = []
 
@@ -43,7 +44,7 @@ class recommendAPI(Resource):
                 print e
                 augmented_query = []
             if len(augmented_query) == 0 or query not in npset:
-                return {"result":"not found"}
+                continue
 
             augmented_query.insert(0, [query, 1.0])
             augmented_query = augmented_query[:10]
