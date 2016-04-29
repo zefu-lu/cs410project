@@ -1,13 +1,14 @@
 from flask import Flask, request, abort, jsonify
 from flask.ext.restful import Resource, Api
 from searchAPI import SearchAPI
+from recommendAPI import recommendAPI
 
 app = Flask(__name__)
 app.config.from_object('config')
 api = Api(app)
 
 api.add_resource(SearchAPI, '/search')
-
+api.add_resource(recommendAPI, '/recommend')
 
 # Routes
 @app.route('/')
