@@ -144,6 +144,11 @@
 	      this.search();
 	    }
 	  },
+	  recommend: function recommend() {
+	    this.refs.search.value = '';
+	    this.emit('recommend', { keywords: Object.keys(KEYWORDS).join('\n') });
+	    this.setProps({ searching: true });
+	  },
 	  render: function render() {
 	    var results = [];
 	    if (typeof this.props.results === 'string') {
@@ -165,7 +170,7 @@
 
 	    return this.div({ class: 'result-page' }, this.div({ class: 'search-div' }, this.div({ class: 'pic-div' }, this.img({ class: 'pic', click: function click() {
 	        location.reload();
-	      }, src: './images/Lus-Garden.png' })), this.div({ class: 'search-box-div' }, this.input({ class: 'search-box', value: this.props.query, ref: 'search', keyup: this.onInput.bind(this) }), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon', style: { marginLeft: '8px' }, click: this.search.bind(this) }, this.i({ class: 'material-icons' }, 'search')), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon' }, this.i({ class: 'material-icons' }, 'mood')))), this.props.isRecommendation ? this.div({ class: 'recommendations' }, 'Recommendations') : this.div({ class: 'results' }, this.p({ class: 'intro' }, this.props.searching ? 'searching...' : this.props.counts + ' results found in ' + this.props.time.toFixed(4)), results, !this.props.searching ? this.div({ class: 'pages-list' }, pagesList) : null));
+	      }, src: './images/Lus-Garden.png' })), this.div({ class: 'search-box-div' }, this.input({ class: 'search-box', value: this.props.query, ref: 'search', keyup: this.onInput.bind(this) }), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon', style: { marginLeft: '8px' }, click: this.search.bind(this) }, this.i({ class: 'material-icons' }, 'search')), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon', click: this.recommend.bind(this) }, this.i({ class: 'material-icons' }, 'mood')))), this.props.isRecommendation ? this.div({ class: 'results' }, this.p({ class: 'intro' }, 'Recommendations for you'), results, null) : this.div({ class: 'results' }, this.p({ class: 'intro' }, this.props.searching ? 'searching...' : this.props.counts + ' results found in ' + this.props.time.toFixed(4)), results, !this.props.searching ? this.div({ class: 'pages-list' }, pagesList) : null));
 	  }
 	});
 
@@ -783,9 +788,15 @@
 	emitter.on('recommend', function (_ref2, component) {
 	  var keywords = _ref2.keywords;
 
-	  console.log('recommend', keywords);
 	  _api2.default.recommend({ keywords: keywords }, function (res) {
 	    console.log(res);
+	    return;
+
+	    var results = res.result;
+	    if (typeof results === 'string') {
+	      results = [];
+	    }
+	    component.setProps({ results: results, isRecommendation: true });
 	  });
 	});
 

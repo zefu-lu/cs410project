@@ -12,9 +12,15 @@ emitter.on('search', function({query, size, page}, component) {
 })
 
 emitter.on('recommend', function({keywords}, component) {
-  console.log('recommend', keywords)
   api.recommend({keywords}, function(res) {
     console.log(res)
+    return
+    
+    let results = res.result
+    if (typeof (results) === 'string') {
+      results = []
+    }
+    component.setProps({results, isRecommendation: true})
   })
 })
 

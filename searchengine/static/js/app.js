@@ -87,6 +87,11 @@ let Result = Simple.Component({
       this.search()
     }
   },
+  recommend: function() {
+    this.refs.search.value = ''
+    this.emit('recommend', {keywords: Object.keys(KEYWORDS).join('\n')})
+    this.setProps({searching: true})
+  },
   render: function() {
     let results = []
     if (typeof(this.props.results) === 'string') { // not found
@@ -113,11 +118,14 @@ let Result = Simple.Component({
                 this.input({class: 'search-box', value: this.props.query, ref: 'search', keyup: this.onInput.bind(this)}),
                 this.button({class: 'mdl-button mdl-js-button mdl-button--icon', style: {marginLeft: '8px'}, click: this.search.bind(this)},
                   this.i({class: 'material-icons'}, 'search')),
-                this.button({class: 'mdl-button mdl-js-button mdl-button--icon'},
+                this.button({class: 'mdl-button mdl-js-button mdl-button--icon', click: this.recommend.bind(this)},
                   this.i({class: 'material-icons'}, 'mood')))),
 
             (this.props.isRecommendation ?
-            this.div({class: 'recommendations'}, 'Recommendations')
+            this.div({class: 'results'},
+              this.p({class: 'intro'}, 'Recommendations for you'),
+              results,
+              null)
             :
             this.div({class: 'results'},
               this.p({class: 'intro'}, this.props.searching? 'searching...' : `${this.props.counts} results found in ${this.props.time.toFixed(4)}`),
