@@ -6,8 +6,6 @@ if (window.localStorage.keywords) {
   KEYWORDS = JSON.parse(window.localStorage.keywords)
 }
 
-emitter.emit('recommend', {keywords: "pluto\nuiuc"})
-
 let Card = Simple.Component({
   showHTML: function() {
     window.open(this.props.link, '_blank')
@@ -51,7 +49,7 @@ let Result = Simple.Component({
       this.props.time += 0.01
     }, 10)
 
-    this.forceUpdate()
+    this.setProps({isRecommendation: false})
   },
   componentDidMount: function() {
     if (!this.props.recommdation && this.props.query) {
@@ -70,6 +68,8 @@ let Result = Simple.Component({
       this.interval = setInterval(()=>{
         this.props.time += 0.01
       }, 10)
+    } else {
+      this.recommend()
     }
   },
   stopTimer: function() {

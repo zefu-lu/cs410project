@@ -61,8 +61,6 @@
 	  KEYWORDS = JSON.parse(window.localStorage.keywords);
 	}
 
-	_emitter2.default.emit('recommend', { keywords: "pluto\nuiuc" });
-
 	var Card = _Simple2.default.Component({
 	  showHTML: function showHTML() {
 	    window.open(this.props.link, '_blank');
@@ -106,7 +104,7 @@
 	      _this.props.time += 0.01;
 	    }, 10);
 
-	    this.forceUpdate();
+	    this.setProps({ isRecommendation: false });
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var _this2 = this;
@@ -127,6 +125,8 @@
 	      this.interval = setInterval(function () {
 	        _this2.props.time += 0.01;
 	      }, 10);
+	    } else {
+	      this.recommend();
 	    }
 	  },
 	  stopTimer: function stopTimer() {
@@ -789,9 +789,6 @@
 	  var keywords = _ref2.keywords;
 
 	  _api2.default.recommend({ keywords: keywords }, function (res) {
-	    console.log(res);
-	    return;
-
 	    var results = res.result;
 	    if (typeof results === 'string') {
 	      results = [];

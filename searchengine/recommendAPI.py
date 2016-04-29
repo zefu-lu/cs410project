@@ -72,7 +72,8 @@ class recommendAPI(Resource):
                     phrase = np["np"]
                     if phrase in augmented_query_dict.keys():
                         score += augmented_query_dict[phrase]['sim']*np["ds"]*math.log(8500.0 / augmented_query_dict[phrase]['df'])
-                scores.append((str(docid), client.news.news_raw.find_one({"_id": docid})["title"],score))
+                doc = client.news.news_raw.find_one({"_id": docid})
+                scores.append((str(docid), doc["title"], doc['url'], score))
         # Ranking
 
         result = sorted(scores, key=lambda tup: tup[-1],reverse=True)
