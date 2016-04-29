@@ -48,7 +48,7 @@ class SearchAPI(Resource):
 
         augmented_query.insert(0, [query, 1.0])
         augmented_query = augmented_query[:10]
-        print("a")
+        #print("a")
         # Getting all documents
         doc_set = set()
         augmented_query_dict = {}
@@ -61,7 +61,7 @@ class SearchAPI(Resource):
             augmented_query_dict[key]["df"] = len(npcount["docs"])
             for doc in npcount["docs"]:
                 doc_set.add(doc["doc:"])
-        print(len(doc_set))
+        #print(len(doc_set))
         # Calculating Scores
         scores = []
         for docid in doc_set:
@@ -78,4 +78,4 @@ class SearchAPI(Resource):
         result = sorted(scores, key=lambda tup: tup[-1],reverse=True)
         print("c")
 
-        return ({"result":result[int(page):((int(page)+1) * int(size))]}, 201)
+        return ({"result":result[int(page):((int(page)+1) * int(size))],"Number of documents" : len(doc_set)}, 201)
