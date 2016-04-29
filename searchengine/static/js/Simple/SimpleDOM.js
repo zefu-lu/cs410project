@@ -111,6 +111,7 @@ SimpleDOM.prototype._render = function(oldElement, sameLevel=false) {
       this.props = d.props   // 'react' only changes props
       this.componentDidUpdate()
     }
+    d.componentDidMount()
   } else if (d) {
     this.element = this.diff(oldElement, d)
   }
