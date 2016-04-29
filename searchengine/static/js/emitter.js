@@ -11,4 +11,11 @@ emitter.on('search', function({query, size, page}, component) {
   })
 })
 
+emitter.on('recommend', function({keywords}, component) {
+  console.log('recommend', keywords)
+  api.recommend({keywords}, function(res) {
+    console.log(res)
+  })
+})
+
 export default emitter

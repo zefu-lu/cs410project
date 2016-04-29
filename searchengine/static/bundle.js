@@ -61,6 +61,8 @@
 	  KEYWORDS = JSON.parse(window.localStorage.keywords);
 	}
 
+	_emitter2.default.emit('recommend', { keywords: "pluto\nuiuc" });
+
 	var Card = _Simple2.default.Component({
 	  showHTML: function showHTML() {
 	    window.open(this.props.link, '_blank');
@@ -778,6 +780,15 @@
 	  });
 	});
 
+	emitter.on('recommend', function (_ref2, component) {
+	  var keywords = _ref2.keywords;
+
+	  console.log('recommend', keywords);
+	  _api2.default.recommend({ keywords: keywords }, function (res) {
+	    console.log(res);
+	  });
+	});
+
 	exports.default = emitter;
 
 /***/ },
@@ -799,6 +810,25 @@
 	      type: 'GET',
 	      dataType: 'json',
 	      data: { query: query, size: size, page: page },
+	      success: function success(res) {
+	        if (res) {
+	          if (callback) callback(res);else callback(null);
+	        } else if (callback) {
+	          callback(null);
+	        }
+	      },
+	      error: function error(res) {
+	        if (callback) callback(null);
+	      }
+	    });
+	  },
+	  recommend: function recommend(_ref2, callback) {
+	    var keywords = _ref2.keywords;
+
+	    $.ajax('/recommend', {
+	      type: 'GET',
+	      dataType: 'json',
+	      data: { keywords: keywords },
 	      success: function success(res) {
 	        if (res) {
 	          if (callback) callback(res);else callback(null);

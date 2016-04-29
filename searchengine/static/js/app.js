@@ -6,6 +6,8 @@ if (window.localStorage.keywords) {
   KEYWORDS = JSON.parse(window.localStorage.keywords)
 }
 
+emitter.emit('recommend', {keywords: "pluto\nuiuc"})
+
 let Card = Simple.Component({
   showHTML: function() {
     window.open(this.props.link, '_blank')

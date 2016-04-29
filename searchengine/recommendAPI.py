@@ -25,20 +25,17 @@ except Exception as e:
     exit(-1)
 
 search = reqparse.RequestParser()
-search.add_argument('kewords', action = 'append')
-search.add_argument('size', type=str)
-search.add_argument('page', type=str)
+search.add_argument('keywords', type=str)
 client = MongoClient('52.200.79.4', 27017)
 
 class recommendAPI(Resource):
     def get(self):
         args = search.parse_args()
         queries = args['keywords']
-        size = args['size']
-        page = args['page']
+        queries = queries.split('\n')
         scores = []
 
-        for query in queires:
+        for query in queries:
             augmented_query = None
             try:
                 augmented_query = w2v.most_similar(positive=[query])
@@ -81,4 +78,4 @@ class recommendAPI(Resource):
         result = result[:50]
         #print("c")
 
-        return ({"result":result[(int(page)* int(size)):((int(page)+1) * int(size))]}, 201)
+        return ({"result":result}, 201)

@@ -16,6 +16,24 @@ let api = {
         if (callback) callback(null)
       }
     })
+  },
+  recommend: function({keywords}, callback) {
+    $.ajax('/recommend', {
+      type: 'GET',
+      dataType: 'json',
+      data: {keywords},
+      success: function(res) {
+        if (res) {
+          if (callback) callback(res)
+          else callback(null)
+        } else if (callback) {
+          callback(null)
+        }
+      },
+      error: function(res) {
+        if (callback) callback(null)
+      }
+    })
   }
 }
 
