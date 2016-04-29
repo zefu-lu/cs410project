@@ -56,6 +56,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var KEYWORDS = {};
+	if (window.localStorage.keywords) {
+	  KEYWORDS = JSON.parse(window.localStorage.keywords);
+	}
+
 	var Card = _Simple2.default.Component({
 	  showHTML: function showHTML() {
 	    window.open(this.props.link, '_blank');
@@ -69,7 +74,7 @@
 	  emitter: _emitter2.default,
 	  getDefaultProps: function getDefaultProps() {
 	    return {
-	      recommdation: false,
+	      isRecommendation: false,
 	      query: '',
 	      counts: 0,
 	      results: [],
@@ -90,6 +95,10 @@
 	    this.props.searching = true;
 	    this.emit('search', { query: query, size: size, page: page });
 
+	    // save to KEYWORDS
+	    KEYWORDS[query] = true;
+	    window.localStorage.keywords = JSON.stringify(KEYWORDS);
+
 	    this.props.time = 0;
 	    this.interval = setInterval(function () {
 	      _this.props.time += 0.01;
@@ -107,6 +116,10 @@
 
 	      this.props.searching = true;
 	      this.emit('search', { query: query, size: size, page: page });
+
+	      // save to KEYWORDS
+	      KEYWORDS[query] = true;
+	      window.localStorage.keywords = JSON.stringify(KEYWORDS);
 
 	      this.props.time = 0;
 	      this.interval = setInterval(function () {
@@ -150,7 +163,7 @@
 
 	    return this.div({ class: 'result-page' }, this.div({ class: 'search-div' }, this.div({ class: 'pic-div' }, this.img({ class: 'pic', click: function click() {
 	        location.reload();
-	      }, src: './images/Lus-Garden.png' })), this.div({ class: 'search-box-div' }, this.input({ class: 'search-box', value: this.props.query, ref: 'search', keyup: this.onInput.bind(this) }), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon', style: { marginLeft: '8px' }, click: this.search.bind(this) }, this.i({ class: 'material-icons' }, 'search')), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon' }, this.i({ class: 'material-icons' }, 'mood')))), this.div({ class: 'results' }, this.p({ class: 'intro' }, this.props.searching ? 'searching...' : this.props.counts + ' results found in ' + this.props.time.toFixed(4)), results, !this.props.searching ? this.div({ class: 'pages-list' }, pagesList) : null));
+	      }, src: './images/Lus-Garden.png' })), this.div({ class: 'search-box-div' }, this.input({ class: 'search-box', value: this.props.query, ref: 'search', keyup: this.onInput.bind(this) }), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon', style: { marginLeft: '8px' }, click: this.search.bind(this) }, this.i({ class: 'material-icons' }, 'search')), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon' }, this.i({ class: 'material-icons' }, 'mood')))), this.props.isRecommendation ? this.div({ class: 'recommendations' }, 'Recommendations') : this.div({ class: 'results' }, this.p({ class: 'intro' }, this.props.searching ? 'searching...' : this.props.counts + ' results found in ' + this.props.time.toFixed(4)), results, !this.props.searching ? this.div({ class: 'pages-list' }, pagesList) : null));
 	  }
 	});
 
@@ -179,9 +192,9 @@
 	    if (this.state.page === 'MAIN_PAGE') {
 	      return this.div({ class: 'app' }, this.div({ class: 'container' }, this.div({ class: 'pic' }), this.input({ ref: 'search', autofocus: 'true', keyup: this.onInput.bind(this) }), this.div({ class: 'button-group' }, this.div({ class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showSearchResult.bind(this) }, 'Search'), this.div({ class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this) }, 'Feeling Lucky'))));
 	    } else if (this.state.page === 'RECOMMENDATION_RESULT') {
-	      return Result({ recommdation: true, query: '' });
+	      return Result({ isRecommendation: true, query: '' });
 	    } else if (this.state.page === 'SEARCH_RESULT') {
-	      return Result({ recommdation: false, query: this.state.query });
+	      return Result({ isRecommendation: false, query: this.state.query });
 	    } else {
 	      throw 'Wrong Page';
 	    }

@@ -1,6 +1,11 @@
 import Simple from './Simple/Simple.js'
 import emitter from './emitter.js'
 
+let KEYWORDS = {}
+if (window.localStorage.keywords) {
+  KEYWORDS = JSON.parse(window.localStorage.keywords)
+}
+
 let Card = Simple.Component({
   showHTML: function() {
     window.open(this.props.link, '_blank')
@@ -16,7 +21,7 @@ let Result = Simple.Component({
   emitter: emitter,
   getDefaultProps: function() {
     return {
-      recommdation: false,
+      isRecommendation: false,
       query: '',
       counts: 0,
       results: [],
@@ -35,6 +40,10 @@ let Result = Simple.Component({
     this.props.searching = true
     this.emit('search', {query, size, page})
 
+    // save to KEYWORDS
+    KEYWORDS[query] = true
+    window.localStorage.keywords = JSON.stringify(KEYWORDS)
+
     this.props.time = 0
     this.interval = setInterval(()=>{
       this.props.time += 0.01
@@ -50,6 +59,10 @@ let Result = Simple.Component({
 
       this.props.searching = true
       this.emit('search', {query, size, page})
+
+      // save to KEYWORDS
+      KEYWORDS[query] = true
+      window.localStorage.keywords = JSON.stringify(KEYWORDS)
 
       this.props.time = 0
       this.interval = setInterval(()=>{
@@ -100,16 +113,19 @@ let Result = Simple.Component({
                   this.i({class: 'material-icons'}, 'search')),
                 this.button({class: 'mdl-button mdl-js-button mdl-button--icon'},
                   this.i({class: 'material-icons'}, 'mood')))),
+
+            (this.props.isRecommendation ?
+            this.div({class: 'recommendations'}, 'Recommendations')
+            :
             this.div({class: 'results'},
               this.p({class: 'intro'}, this.props.searching? 'searching...' : `${this.props.counts} results found in ${this.props.time.toFixed(4)}`),
               results,
               (!this.props.searching ?
               this.div({class: 'pages-list'},
                 pagesList)
-              : null )))
+              : null ))))
   }
 })
-
 
 let App = Simple.Component({
   init: function() {
@@ -142,9 +158,9 @@ let App = Simple.Component({
                   this.div({class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showSearchResult.bind(this)}, 'Search'),
                   this.div({class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this)}, 'Feeling Lucky'))))
     } else if (this.state.page === 'RECOMMENDATION_RESULT') {
-      return Result({recommdation: true, query: ''})
+      return Result({isRecommendation: true, query: ''})
     } else if (this.state.page === 'SEARCH_RESULT') {
-      return Result({recommdation: false, query: this.state.query})
+      return Result({isRecommendation: false, query: this.state.query})
     } else {
       throw 'Wrong Page'
     }
