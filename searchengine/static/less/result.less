@@ -1,5 +1,6 @@
 // main: ./entry.less
 .result-page {
+  background-color: #fbfbfb;
   position: relative;
   width: 100%;
   height: 100%;
@@ -88,7 +89,17 @@
     padding-top: 12px;
 
     .page {
-        margin-left: 12px;
+      margin-left: 12px;
+      font-weight: 500;
+
+      &.selected {
+        font-size: 18px;
+        color: #BF6F6F;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 }

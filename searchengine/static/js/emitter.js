@@ -5,10 +5,9 @@ let emitter = Simple.createEmitter({
 })
 
 emitter.on('search', function({query, size, page}, component) {
-  console.log('sent')
   api.search({query, size, page}, function(res) {
-    console.log(res)
-    component.setProps({count: res.count, results: res.result})
+    component.stopTimer()
+    component.setProps({counts: res.counts, results: res.result, searching: false, page})
   })
 })
 

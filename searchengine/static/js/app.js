@@ -18,44 +18,95 @@ let Result = Simple.Component({
     return {
       recommdation: false,
       query: '',
-      count: 0,
+      counts: 0,
       results: [],
-      searching: true
+      searching: true,
+      time: 0,
+      page: 0
     }
   },
   search: function() {
+    let query = this.refs.search.value.trim()
+    if (!query.length) return
+    this.props.query = query
+    let page = 0,
+        size = 10
 
+    this.props.searching = true
+    this.emit('search', {query, size, page})
+
+    this.props.time = 0
+    this.interval = setInterval(()=>{
+      this.props.time += 0.01
+    }, 10)
+
+    this.forceUpdate()
   },
   componentDidMount: function() {
     if (!this.props.recommdation && this.props.query) {
       let query = this.props.query.toLowerCase(),
           size = 10,
           page = 0
+
+      this.props.searching = true
       this.emit('search', {query, size, page})
+
+      this.props.time = 0
+      this.interval = setInterval(()=>{
+        this.props.time += 0.01
+      }, 10)
+    }
+  },
+  stopTimer: function() {
+    clearInterval(this.interval)
+  },
+  searchPage: function(page) {
+    let query = this.props.query.toLowerCase(),
+        size = 10
+
+    this.props.searching = true
+    this.emit('search', {query, size, page})
+  },
+  onInput: function(event) {
+    if (event.keyCode === 13) {
+      this.search()
     }
   },
   render: function() {
-    let results = this.props.results.map((d) => {
-      return Card({title: d[1], link: d[2]})
-    })
+    let results = []
+    if (typeof(this.props.results) === 'string') { // not found
+      results = null
+      this.props.counts = 0
+    } else {
+      results = this.props.results.map((d) => {
+        return Card({title: d[1], link: d[2]})
+      })
+    }
+
+    let pagesList = []
+    if (!this.props.searching && this.props.counts) {
+      for (let i = 0; i < Math.ceil(this.props.counts / 10); i++) {
+        pagesList.push(this.span({class: `page ${this.props.page === i ? 'selected' : ''}`, click: this.searchPage.bind(this, i)}, (i+1)))
+      }
+    }
 
     return this.div({class: 'result-page'},
             this.div({class: 'search-div'},
               this.div({class: 'pic-div'},
                 this.img({class: 'pic', click: ()=> {location.reload()}, src:'./images/Lus-Garden.png'})),
               this.div({class: 'search-box-div'},
-                this.input({class: 'search-box', value: this.props.query}),
-                this.button({class: 'mdl-button mdl-js-button mdl-button--icon', style: {marginLeft: '8px'}},
+                this.input({class: 'search-box', value: this.props.query, ref: 'search', keyup: this.onInput.bind(this)}),
+                this.button({class: 'mdl-button mdl-js-button mdl-button--icon', style: {marginLeft: '8px'}, click: this.search.bind(this)},
                   this.i({class: 'material-icons'}, 'search')),
                 this.button({class: 'mdl-button mdl-js-button mdl-button--icon'},
                   this.i({class: 'material-icons'}, 'mood')))),
             this.div({class: 'results'},
-              this.p({class: 'intro'}, this.props.searching? 'searching...' : '10 results found'),
+              this.p({class: 'intro'}, this.props.searching? 'searching...' : `${this.props.counts} results found in ${this.props.time.toFixed(4)}`),
               results,
+              (!this.props.searching ?
               this.div({class: 'pages-list'},
-                this.span({class: 'page'}, 1),
-                this.span({class: 'page'}, 2)
-              )))
+                pagesList)
+              : null )))
   }
 })
 
@@ -72,6 +123,11 @@ let App = Simple.Component({
   showRecommendationResult: function() {
     this.setState({page: 'RECOMMENDATION_RESULT'})
   },
+  onInput: function(event) {
+    if (event.keyCode === 13) {
+      this.showSearchResult()
+    }
+  },
   showSearchResult: function() {
     if (!this.refs.search.value.trim().length) return
     this.setState({page: 'SEARCH_RESULT', query: this.refs.search.value})
@@ -81,7 +137,7 @@ let App = Simple.Component({
       return this.div({class: 'app'},
               this.div({class: 'container'},
                 this.div({class: 'pic'}),
-                this.input({ref: 'search', autofocus: 'true'}),
+                this.input({ref: 'search', autofocus: 'true', keyup: this.onInput.bind(this)}),
                 this.div({class: 'button-group'},
                   this.div({class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showSearchResult.bind(this)}, 'Search'),
                   this.div({class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this)}, 'Feeling Lucky'))))

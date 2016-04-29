@@ -71,28 +71,86 @@
 	    return {
 	      recommdation: false,
 	      query: '',
-	      count: 0,
+	      counts: 0,
 	      results: [],
-	      searching: true
+	      searching: true,
+	      time: 0,
+	      page: 0
 	    };
 	  },
-	  search: function search() {},
+	  search: function search() {
+	    var _this = this;
+
+	    var query = this.refs.search.value.trim();
+	    if (!query.length) return;
+	    this.props.query = query;
+	    var page = 0,
+	        size = 10;
+
+	    this.props.searching = true;
+	    this.emit('search', { query: query, size: size, page: page });
+
+	    this.props.time = 0;
+	    this.interval = setInterval(function () {
+	      _this.props.time += 0.01;
+	    }, 10);
+
+	    this.forceUpdate();
+	  },
 	  componentDidMount: function componentDidMount() {
+	    var _this2 = this;
+
 	    if (!this.props.recommdation && this.props.query) {
 	      var query = this.props.query.toLowerCase(),
 	          size = 10,
 	          page = 0;
+
+	      this.props.searching = true;
 	      this.emit('search', { query: query, size: size, page: page });
+
+	      this.props.time = 0;
+	      this.interval = setInterval(function () {
+	        _this2.props.time += 0.01;
+	      }, 10);
+	    }
+	  },
+	  stopTimer: function stopTimer() {
+	    clearInterval(this.interval);
+	  },
+	  searchPage: function searchPage(page) {
+	    var query = this.props.query.toLowerCase(),
+	        size = 10;
+
+	    this.props.searching = true;
+	    this.emit('search', { query: query, size: size, page: page });
+	  },
+	  onInput: function onInput(event) {
+	    if (event.keyCode === 13) {
+	      this.search();
 	    }
 	  },
 	  render: function render() {
-	    var results = this.props.results.map(function (d) {
-	      return Card({ title: d[1], link: d[2] });
-	    });
+	    var results = [];
+	    if (typeof this.props.results === 'string') {
+	      // not found
+	      results = null;
+	      this.props.counts = 0;
+	    } else {
+	      results = this.props.results.map(function (d) {
+	        return Card({ title: d[1], link: d[2] });
+	      });
+	    }
+
+	    var pagesList = [];
+	    if (!this.props.searching && this.props.counts) {
+	      for (var i = 0; i < Math.ceil(this.props.counts / 10); i++) {
+	        pagesList.push(this.span({ class: 'page ' + (this.props.page === i ? 'selected' : ''), click: this.searchPage.bind(this, i) }, i + 1));
+	      }
+	    }
 
 	    return this.div({ class: 'result-page' }, this.div({ class: 'search-div' }, this.div({ class: 'pic-div' }, this.img({ class: 'pic', click: function click() {
 	        location.reload();
-	      }, src: './images/Lus-Garden.png' })), this.div({ class: 'search-box-div' }, this.input({ class: 'search-box', value: this.props.query }), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon', style: { marginLeft: '8px' } }, this.i({ class: 'material-icons' }, 'search')), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon' }, this.i({ class: 'material-icons' }, 'mood')))), this.div({ class: 'results' }, this.p({ class: 'intro' }, this.props.searching ? 'searching...' : '10 results found'), results, this.div({ class: 'pages-list' }, this.span({ class: 'page' }, 1), this.span({ class: 'page' }, 2))));
+	      }, src: './images/Lus-Garden.png' })), this.div({ class: 'search-box-div' }, this.input({ class: 'search-box', value: this.props.query, ref: 'search', keyup: this.onInput.bind(this) }), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon', style: { marginLeft: '8px' }, click: this.search.bind(this) }, this.i({ class: 'material-icons' }, 'search')), this.button({ class: 'mdl-button mdl-js-button mdl-button--icon' }, this.i({ class: 'material-icons' }, 'mood')))), this.div({ class: 'results' }, this.p({ class: 'intro' }, this.props.searching ? 'searching...' : this.props.counts + ' results found in ' + this.props.time.toFixed(4)), results, !this.props.searching ? this.div({ class: 'pages-list' }, pagesList) : null));
 	  }
 	});
 
@@ -108,13 +166,18 @@
 	  showRecommendationResult: function showRecommendationResult() {
 	    this.setState({ page: 'RECOMMENDATION_RESULT' });
 	  },
+	  onInput: function onInput(event) {
+	    if (event.keyCode === 13) {
+	      this.showSearchResult();
+	    }
+	  },
 	  showSearchResult: function showSearchResult() {
 	    if (!this.refs.search.value.trim().length) return;
 	    this.setState({ page: 'SEARCH_RESULT', query: this.refs.search.value });
 	  },
 	  render: function render() {
 	    if (this.state.page === 'MAIN_PAGE') {
-	      return this.div({ class: 'app' }, this.div({ class: 'container' }, this.div({ class: 'pic' }), this.input({ ref: 'search', autofocus: 'true' }), this.div({ class: 'button-group' }, this.div({ class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showSearchResult.bind(this) }, 'Search'), this.div({ class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this) }, 'Feeling Lucky'))));
+	      return this.div({ class: 'app' }, this.div({ class: 'container' }, this.div({ class: 'pic' }), this.input({ ref: 'search', autofocus: 'true', keyup: this.onInput.bind(this) }), this.div({ class: 'button-group' }, this.div({ class: 'search-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showSearchResult.bind(this) }, 'Search'), this.div({ class: 'lucky-btn mdl-button mdl-js-button mdl-button--raised mdl-button--colored', click: this.showRecommendationResult.bind(this) }, 'Feeling Lucky'))));
 	    } else if (this.state.page === 'RECOMMENDATION_RESULT') {
 	      return Result({ recommdation: true, query: '' });
 	    } else if (this.state.page === 'SEARCH_RESULT') {
@@ -696,10 +759,9 @@
 	  var size = _ref.size;
 	  var page = _ref.page;
 
-	  console.log('sent');
 	  _api2.default.search({ query: query, size: size, page: page }, function (res) {
-	    console.log(res);
-	    component.setProps({ count: res.count, results: res.result });
+	    component.stopTimer();
+	    component.setProps({ counts: res.counts, results: res.result, searching: false, page: page });
 	  });
 	});
 
