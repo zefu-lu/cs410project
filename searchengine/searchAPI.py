@@ -78,4 +78,4 @@ class SearchAPI(Resource):
         result = sorted(scores, key=lambda tup: tup[-1],reverse=True)
         print("c")
 
-        return ({"result":result[int(page):((int(page)+1) * int(size))],"Number of documents" : len(doc_set)}, 201)
+        return ({"result":result[int(page):((int(page)+1) * int(size))],"count" : len(doc_set)}, 201)
